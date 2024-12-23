@@ -36,5 +36,11 @@ class InodeSeeder extends Seeder
         $inode->users_id = 1;
         $inode->name = "file2";
         $inode->save();
+        //
+        $inode = new Inode();
+        $inode->inodes_id = 0;
+        $inode->users_id = 1;
+        $inode->name = "file3.ext";
+        $inode->save();
     }
 }

@@ -27,5 +27,12 @@ class FileSeeder extends Seeder
         $file->type = "text";
         $file->save();
 
+        $file = new File();
+        $file->inodes_id = 0;
+        $file->filename = "otro documento.txt";
+        $file->size = 1024;
+        $file->type = "text";
+        $file->save();
+
     }
 }

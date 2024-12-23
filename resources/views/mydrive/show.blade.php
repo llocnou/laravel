@@ -6,10 +6,6 @@
     </x-slot>
     @include('partials.breadcrumb')
     <div class="">
-        {{ __("You're logged in!") }}
-        <div class='inodes'>
-            {!! $inodes !!}
-        </div>
 
     </div>
 
