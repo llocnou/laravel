@@ -2,66 +2,80 @@
 
 namespace App\Http\Controllers;
 
-// use App\Models\Inode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    private function recupera($users_id, $anidamiento = 0, $parent = 0)
-    {
-        $resultado = '';
-        $inodes = DB::table('inodes')->where([['users_id', $users_id], ['inodes_id', $parent]])->get();
-        if (sizeof($inodes) > 0) {
-            $anidamiento++;
-            $resultado .= "\n" . str_repeat("\t", $anidamiento) . "<ul>";
-            foreach ($inodes as $inode) {
-                $type = 'dir';
-                if (DB::table('files')->where('inodes_id', $inode->id)->exists()) {
-                    $type = 'file';
-                }
-                // 🗁 🗋
-                if (DB::table('files')->where('inodes_id', $inode->id)->exists()) $icon = '🗋';
-                else $icon = '🗁';
-                // echo str_repeat("--",$anidamiento)."[$type] $inode->name<br/>";
-                $resultado .= "\n" . str_repeat("\t", $anidamiento + 1) . "<li class='$type'>";
-                $resultado .= "<a href='" . route('dashboard.show', $inode->id) . "'>$icon $inode->name</a></li>";
-                $resultado .= $this->recupera($users_id, $anidamiento, $inode->id);
-            }
-            $resultado .= "\n" . str_repeat("\t", $anidamiento) . "</ul>";
-        }
-        return $resultado;
+    // Recupera todos los archivos del usuario
+    private function myFiles($users_id){
+        // INNER JOIN
+        return DB::table('inodes')
+        ->where('inodes.users_id', $users_id)
+        ->join('files', 'inodes.id', '=', 'files.inodes_id' )
+        ->get();
     }
 
+    // Recupera un archivo
+    private function myFile($id){
+        // INNER JOIN
+        return DB::table('inodes')
+            ->join('files', 'inodes.id', '=', 'files.inodes_id' )
+            ->where('inodes.id', $id)
+            ->first();
+    }
+
+    // Recupera todos los directorios del usuario
+    private function dirs($users_id){
+        $myfiles = DB::table('files')
+        ->select('inodes_id')
+        ->where('users_id', $users_id);
+
+        $mydirs = DB::table('inodes')
+        ->where('users_id', $users_id)
+        ->whereNotIn('id', $myfiles)
+        ->get();
+
+        return $mydirs;
+    }
+
+    // Devuelve TRUE si es un archivo
+    private function isFile($inode_id){
+        return  DB::table('files')->where('inodes_id', $inode_id)->exists();
+    }
+
+    //
     // Devuelve un array con el breadcrumb
+    //
     private function breadcrumb($id) {
-        $res = $this->bread($id);
-        $res[0]["active"] = true;
-        // dd($res);
-        return array_reverse($res);
+        return array_reverse($this->bread($id));
     }
-
+    //
+    // Genera un array con el breadcrumb invertido.
+    //
     private function bread($id) {
-        // $res = array();
         $inode = DB::table('inodes')->find($id);
         $res[] = array("id" =>$id, "name" =>$inode->name);
-            if ($inode->inodes_id>0) {
-                $res = array_merge($res, $this->bread($inode->inodes_id));
+            if ($inode->parent_id>0) {
+                $res = array_merge($res, $this->bread($inode->parent_id));
             }
         return $res;
     }
 
-
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        // Recupera los inodos de la raíz del usuario.
-        $inodes = $this->recupera(Auth::id());
+        // Carpetas y archivos del usuario
+        $dirs = $this->dirs(Auth::id());
+        $files = $this->myFiles(Auth::id());
 
-        return view('dashboard', compact('inodes'));
+        // Vista de estructura del directorio
+        return view('mydrive.index')
+        ->with('dirs', $dirs)
+        ->with('files', $files);
     }
 
     /**
@@ -86,15 +100,20 @@ class DashboardController extends Controller
     public function show(string $id)
     {
 
-        //
+        // Breadcrumb
         $breadcrumb = $this->breadcrumb($id);
 
-        // Recupera los inodos de la raíz del usuario.
-        $inodes = $this->recupera(Auth::id());
-        // dd(compact('inodes','breadcrumb'));
-        return view('mydrive.show')
-            ->with('inodes', $inodes)
-            ->with('breadcrumb', $breadcrumb);
+        if ($this->isFile($id)) {
+            return view('mydrive.show_file')
+            ->with('breadcrumb', $breadcrumb)
+            ->with('file', $this->myFile($id));
+        } else {
+            $dir = DB::table('inodes')->find($id);
+            return view('mydrive.show_dir')
+            ->with('breadcrumb', $breadcrumb)
+            ->with('dir', $dir);
+        }
+
     }
 
     /**
@@ -102,7 +121,9 @@ class DashboardController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // Sólo el nombre del inodo !!!
+        return ("Dashboard edit $id");
+
     }
 
     /**

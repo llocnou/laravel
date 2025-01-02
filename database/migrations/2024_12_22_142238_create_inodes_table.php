@@ -15,7 +15,7 @@ return new class extends Migration
             // PK
             $table->id();
             $table->bigInteger('users_id')->unsigned()->nullable(false);
-            $table->bigInteger('inodes_id')->unsigned()->nullable(false)->default(0);
+            $table->bigInteger('parent_id')->unsigned()->nullable(false)->default(0);
 
             $table->string('name', 60);
             $table->timestamps();

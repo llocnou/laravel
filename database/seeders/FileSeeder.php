@@ -22,14 +22,14 @@ class FileSeeder extends Seeder
 
         $file = new File();
         $file->inodes_id = 4;
-        $file->filename = "otro documento.txt";
+        $file->filename = "otro documento1.txt";
         $file->size = 1024;
         $file->type = "text";
         $file->save();
 
         $file = new File();
-        $file->inodes_id = 0;
-        $file->filename = "otro documento.txt";
+        $file->inodes_id = 5;
+        $file->filename = "otro documento2.txt";
         $file->size = 1024;
         $file->type = "text";
         $file->save();

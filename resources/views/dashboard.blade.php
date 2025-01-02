@@ -8,7 +8,6 @@
     <div class="">
         {{ __("You're logged in!") }}
         <div class='inodes'>
-            {!! $inodes !!}
         </div>
 
     </div>

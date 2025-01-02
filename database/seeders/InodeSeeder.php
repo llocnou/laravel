@@ -13,32 +13,33 @@ class InodeSeeder extends Seeder
      */
     public function run(): void
     {
+        //1
         $inode = new Inode();
-        $inode->inodes_id = 0; // root
+        $inode->parent_id = 0; // root
         $inode->users_id = 1;
         $inode->name = "root";
         $inode->save();
-        //
+        //2
         $inode = new Inode();
-        $inode->inodes_id = 1;
+        $inode->parent_id = 1;
         $inode->users_id = 1;
         $inode->name = "carpeta";
         $inode->save();
-        //
+        //3
         $inode = new Inode();
-        $inode->inodes_id = 1;
+        $inode->parent_id = 1;
         $inode->users_id = 1;
         $inode->name = "file1";
         $inode->save();
-        //
+        //4
         $inode = new Inode();
-        $inode->inodes_id = 2;
+        $inode->parent_id = 2;
         $inode->users_id = 1;
         $inode->name = "file2";
         $inode->save();
-        //
+        //5
         $inode = new Inode();
-        $inode->inodes_id = 0;
+        $inode->parent_id = 0;
         $inode->users_id = 1;
         $inode->name = "file3.ext";
         $inode->save();

@@ -16,7 +16,7 @@ Route::get('/', [AuthenticatedSessionController::class, 'create'])->middleware('
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/dashboard/{id}', [DashboardController::class, 'show'])->middleware(['auth', 'verified'])->name('dashboard.show');
-
+Route::get('/dashboard/edit/{id}', [DashboardController::class, 'edit'])->middleware(['auth', 'verified'])->name('dashboard.edit');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
