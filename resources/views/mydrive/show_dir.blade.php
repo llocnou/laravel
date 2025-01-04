@@ -12,6 +12,12 @@
             <p>{{ $dir->name }} <a href="{{ route('dashboard.edit', $dir->id) }}" title="{{__('edit')}}">🖉</a></p>
             <p> Creado: {{ $dir->created_at }}</p>
             <p> Modificado: {{ $dir->updated_at }}</p>
+            <a href='{{route('dashboard.create.dir', $dir->id)}}' title='{{__('add new folder')}}'> [+] </a>
+            <form action="{{route('dashboard.destroy.dir', $dir->id)}}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit">[-]</button>
+            </form>
             <button>Nueva carpeta</button>
             <button>Subir archivo</button>
             <button>Borrar</button>

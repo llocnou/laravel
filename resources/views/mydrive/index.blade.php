@@ -27,7 +27,7 @@
                 echo '</a></li>';
             }
         } else {
-            echo '<li>Directorio vacio</li>';
+            // echo '<li>Directorio vacio</li>';
         }
         // Subdirectorios
         $carpetas = searchChildren($dirs, $parent);
@@ -53,12 +53,22 @@
     <div class="">
         <div class='inodes'>
             <ul>
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">🖫 {{ __('myDrive') }}</a></li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('dashboard') }}">🖫 {{ __('myDrive') }}</a>
+                    <a href='{{ route('dashboard.create.dir', 0) }}' title='{{ __('add new folder') }}'> + </a>
+                </li>
                 @php
                     drawFileSystem($dirs, $files, 0);
                 @endphp
             </ul>
         </div>
+
+        @php
+            // return Storage::donwload('file.ext', $name, $headers);
+            // Storage::put('file.ext', $recursos);
+            // https://laravel.com/docs/11.x/filesystem
+
+        @endphp
 
     </div>
 </x-app-layout>
