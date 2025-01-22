@@ -55,7 +55,8 @@
             <ul>
                 <li class="breadcrumb-item">
                     <a href="{{ route('dashboard') }}">🖫 {{ __('myDrive') }}</a>
-                    <a href='{{ route('dashboard.create.dir', 0) }}' title='{{ __('add new folder') }}'> + </a>
+                    <a href='{{ route('dashboard.create.dir', "0") }}' title='{{ __('add new folder') }}'>[+]</a>
+                    <a href='{{ route('file.upload', 0) }}' title='{{ __('add new file') }}'>[🠉]</a>
                 </li>
                 @php
                     drawFileSystem($dirs, $files, 0);

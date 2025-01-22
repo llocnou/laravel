@@ -18,9 +18,8 @@
                 @method('DELETE')
                 <button type="submit">[-]</button>
             </form>
-            <button>Nueva carpeta</button>
-            <button>Subir archivo</button>
-            <button>Borrar</button>
+            <a href='{{ route('file.upload', $dir->id) }}' title='{{ __('add new file') }}'>[🠉]</a>
+
             {{-- Mostrar contenido de la carpeta ? --}}
             <address>Mostrar contenido de la carpeta ?</address>
         @endisset

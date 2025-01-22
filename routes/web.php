@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -21,14 +22,18 @@ Route::get('/dashboard/edit/{id}', [DashboardController::class, 'edit'])->middle
 Route::patch('/dashboard/{id}', [DashboardController::class, 'update'])->middleware(['auth', 'verified'])->name('dashboard.update');
 
 // Create & Store
-Route::get('/dashboard/create/{where}', [DashboardController::class, 'create'])->middleware(['auth', 'verified'])->name('dashboard.create.dir');
-Route::post('/dashboard/', [DashboardController::class, 'store'])->middleware(['auth', 'verified'])->name('dashboard.store.dir');
+Route::get('/dashboard/create/{where?}', [DashboardController::class, 'create'])->middleware(['auth', 'verified'])->name('dashboard.create.dir');
+Route::post('/dashboard', [DashboardController::class, 'store'])->middleware(['auth', 'verified'])->name('dashboard.store.dir');
 
 // Delete
 Route::delete('dashboard/{id}', [DashboardController::class, 'destroy'])->middleware(['auth', 'verified'])->name('dashboard.destroy.dir');
 
-//Route::post('/dashboard/update', [DashboardController::class, 'update'])->middleware(['auth', 'verified'])->name('dashboard.update');
-Route::get('/dashboard/upload/{where}', [DashboardController::class, 'upload'])->middleware(['auth', 'verified'])->name('dashboard.upload.file');
+// FILE CONTROLLER
+Route::get('/dashboard/upload/{where}', [FileController::class , 'draw'])->middleware(['auth', 'verified'])->name('file.create'); // Pinta el formulario
+Route::post('/dashboard/upload/{where}', [FileController::class , 'upload'])->middleware(['auth', 'verified'])->name('file.upload'); // Sube el archivo
+Route::get('/dashboard/download/{id}', [FileController::class, 'download'])->middleware(['auth', 'verified'])->name('file.download'); // Baja el archivo
+Route::delete('/dashboard/delete/{id}', [FileController::class, 'delete'])->middleware(['auth', 'verified'])->name('file.delete'); // Elimina el archivo
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

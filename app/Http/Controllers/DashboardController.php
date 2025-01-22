@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Inode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +12,7 @@ use function PHPUnit\Framework\isNull;
 class DashboardController extends Controller
 {
     // Recupera todos los archivos del usuario
-    private function myFiles($users_id)
+    protected function myFiles($users_id)
     {
         // INNER JOIN
         return DB::table('inodes')
@@ -23,7 +22,7 @@ class DashboardController extends Controller
     }
 
     // Recupera un archivo
-    private function myFile($id)
+    protected function myFile($id)
     {
         // INNER JOIN
         return DB::table('inodes')
@@ -33,7 +32,7 @@ class DashboardController extends Controller
     }
 
     // Recupera todos los directorios del usuario
-    private function dirs($users_id)
+    protected function dirs($users_id)
     {
         $myfiles = DB::table('files')
             ->select('inodes_id')
@@ -48,20 +47,20 @@ class DashboardController extends Controller
     }
 
     // Devuelve TRUE si es un archivo
-    private function isFile($id)
+    protected function isFile($id)
     {
         return  DB::table('files')->where('inodes_id', $id)->exists();
     }
 
     // Devuelve TRUE si no tiene hijos
-    private function isEmpty($id){
+    protected function isEmpty($id){
         return DB::table('inodes')->where('parent_id', $id)->doesntExist();
     }
 
     //
     // Devuelve un array con el breadcrumb
     //
-    private function breadcrumb($id)
+    protected function breadcrumb($id)
     {
         if ($id>0) {
             return array_reverse($this->bread($id));
@@ -100,7 +99,7 @@ class DashboardController extends Controller
     /**
      * Show the form for creating a new folder.
      */
-    public function create($id)
+    public function create(String $id="0")
     {
         //
         // ATENCIÓN
@@ -205,7 +204,10 @@ class DashboardController extends Controller
 
         if ( DB::table('inodes')
                 ->where([['id', $id],['users_id', Auth::id()]])
-                ->update(['name' => $request->name]))
+                ->update([
+                    'name' => $request->name,
+                    'updated_at' => Carbon::now()
+                ]))
             {
                 session()->flash('info', __('Updated!'));
             } else {
